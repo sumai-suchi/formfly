@@ -1,11 +1,15 @@
 import HeroSection from "@/components/HeroSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import ChatbotDemoSection from "@/components/ChatbotDemoSection";
 
-const HomePage = () => {
+export default function HomePage() {
   return (
-    <div>
+    <div className="flex flex-col">
       <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <ChatbotDemoSection />
     </div>
   );
-};
-
-export default HomePage;
+}

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP, smoothScrollTo } from "@/lib/gsap";
 
 type QuestionStep = 0 | 1 | 2 | 3;
 
@@ -20,64 +20,61 @@ export default function HeroSection() {
   useGSAP(
     () => {
       const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
+        defaults: { ease: "power2.out", clearProps: "all" },
       });
 
       tl.from(".hero-badge", {
         opacity: 0,
-        y: -15,
-        duration: 0.7,
+        y: -10,
+        duration: 0.3,
       })
         .from(
           ".hero-heading-line",
           {
             opacity: 0,
-            y: 40,
-            stagger: 0.12,
-            duration: 0.9,
-            ease: "power4.out",
+            y: 20,
+            stagger: 0.05,
+            duration: 0.35,
           },
-          "-=0.4"
+          "-=0.15"
         )
         .from(
           ".hero-description",
           {
             opacity: 0,
-            y: 20,
-            duration: 0.8,
+            y: 12,
+            duration: 0.3,
           },
-          "-=0.5"
+          "-=0.2"
         )
         .from(
           ".hero-cta-btn",
           {
             opacity: 0,
-            y: 16,
-            stagger: 0.1,
-            duration: 0.7,
+            y: 10,
+            stagger: 0.05,
+            duration: 0.25,
           },
-          "-=0.4"
+          "-=0.15"
         )
         .from(
           ".hero-feature-item",
           {
             opacity: 0,
-            y: 15,
-            stagger: 0.08,
-            duration: 0.6,
+            y: 10,
+            stagger: 0.04,
+            duration: 0.25,
           },
-          "-=0.4"
+          "-=0.15"
         )
         .from(
           widgetCardRef.current,
           {
             opacity: 0,
-            y: 50,
-            scale: 0.96,
-            duration: 1,
-            ease: "power3.out",
+            y: 20,
+            duration: 0.35,
           },
-          "-=0.5"
+          "-=0.15"
         );
     },
     { scope: containerRef }
@@ -162,8 +159,7 @@ export default function HeroSection() {
 
             <button
               onClick={() => {
-                const element = document.getElementById("demo-widget");
-                element?.scrollIntoView({ behavior: "smooth" });
+                smoothScrollTo("#demo", 70);
               }}
               className="hero-cta-btn inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-6 py-3.5 text-sm font-semibold text-slate-300 backdrop-blur-sm transition-all duration-200 hover:bg-white/[0.08] hover:border-white/20 hover:text-white cursor-pointer"
             >
@@ -208,7 +204,7 @@ export default function HeroSection() {
         <div
           id="demo-widget"
           ref={widgetCardRef}
-          className="relative mx-auto mt-14 max-w-2xl rounded-2xl border border-white/10 bg-[#0d0f17] shadow-2xl shadow-indigo-950/40 backdrop-blur-2xl overflow-hidden"
+          className="relative mx-auto mt-14 max-w-2xl rounded-2xl border border-white/10 bg-[#0d0f17] shadow-2xl shadow-indigo-950/40 backdrop-blur-md overflow-hidden"
         >
           {/* Widget Header */}
           <div className="flex items-center justify-between border-b border-white/10 bg-black/40 px-5 py-3.5">

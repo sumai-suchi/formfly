@@ -12,11 +12,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+}
+
+/* GPU composite optimization for snappy rendering */
+.feature-card,
+.step-card,
+.demo-studio-box {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Subtle blueprint grid */
