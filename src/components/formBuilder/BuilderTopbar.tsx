@@ -87,12 +87,12 @@ export default function BuilderTopbar({
   };
 
   return (
-    <div className="sticky top-0 z-30 flex items-center justify-between border-b border-white/8 bg-[#090a0f]/95 px-4 py-3 backdrop-blur">
-      {/* Left */}
-      <div className="flex items-center gap-3">
+    <div className="sticky top-0 z-30 flex items-center justify-between border-b border-white/8 bg-[#090a0f]/95 px-3 sm:px-4 py-2.5 sm:py-3 backdrop-blur">
+      {/* Left: Back Link & Form Title */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <Link
           href="/dashboard"
-          className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/5 hover:text-white"
+          className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/5 hover:text-white shrink-0"
           title="Back to dashboard"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -108,23 +108,23 @@ export default function BuilderTopbar({
             onChange={(e) => setTitleValue(e.target.value)}
             onBlur={handleTitleBlur}
             onKeyDown={handleTitleKeyDown}
-            className="rounded-md border border-indigo-500/50 bg-slate-800 px-2 py-1 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            className="rounded-md border border-indigo-500/50 bg-slate-800 px-2 py-1 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 max-w-[120px] sm:max-w-[200px]"
           />
         ) : (
           <button
             onClick={handleTitleClick}
-            className="rounded px-1 py-0.5 text-sm font-semibold text-white transition hover:bg-white/5"
+            className="rounded px-1.5 py-0.5 text-xs sm:text-sm font-semibold text-white transition hover:bg-white/5 truncate max-w-[120px] sm:max-w-[180px] md:max-w-xs text-left"
             title="Click to edit title"
           >
-            {form.title}
+            {form.title || "Untitled form"}
           </button>
         )}
       </div>
 
-      {/* Right */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      {/* Right: Theme, Publish/Draft, Embed, Status */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         {/* Save indicator */}
-        <span className="text-xs text-slate-500 hidden sm:inline-block">
+        <span className="text-xs text-slate-500 hidden md:inline-block">
           {saving === "saving" && (
             <span className="flex items-center gap-1.5">
               <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -148,7 +148,7 @@ export default function BuilderTopbar({
         <button
           type="button"
           onClick={() => onLeftTabChange?.(activeLeftTab === "theme" ? "questions" : "theme")}
-          className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-2 sm:px-2.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
             activeLeftTab === "theme"
               ? "border-indigo-500/60 bg-indigo-500/20 text-white shadow-sm"
               : "border-white/10 bg-slate-800/60 text-slate-300 hover:bg-white/10 hover:text-white"
@@ -159,59 +159,55 @@ export default function BuilderTopbar({
             className="h-3.5 w-3.5 rounded-full border border-white/20 shadow-sm shrink-0"
             style={{ backgroundColor: form.primaryColor || "#4f46e5" }}
           />
-          <span className="hidden sm:inline">Theme &</span> Colors
+          <span className="hidden sm:inline">Theme</span>
         </button>
 
-        {/* Status badge */}
-        <span
-          className={`hidden md:inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            form.status === "PUBLISHED"
-              ? "bg-emerald-500/15 text-emerald-400"
-              : "bg-amber-500/15 text-amber-400"
-          }`}
-        >
-          {form.status}
-        </span>
-
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={() => updateStatus("DRAFT")}
-            disabled={statusSaving || form.status === "DRAFT"}
-            className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-slate-300 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            {statusSaving && form.status !== "DRAFT" ? "Saving…" : "Draft"}
-          </button>
+        {/* Status Actions */}
+        {form.status === "DRAFT" ? (
           <button
             type="button"
             onClick={() => updateStatus("PUBLISHED")}
-            disabled={statusSaving || form.status === "PUBLISHED"}
-            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={statusSaving}
+            className="rounded-lg bg-indigo-600 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
           >
-            {statusSaving && form.status !== "PUBLISHED" ? "Publishing…" : "Publish"}
+            {statusSaving ? "..." : "Publish"}
           </button>
+        ) : (
           <button
             type="button"
-            onClick={() => setEmbedModalOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-500/35 bg-indigo-500/10 px-2.5 py-1.5 text-xs font-semibold text-indigo-300 transition hover:bg-indigo-500/20 hover:text-white cursor-pointer"
-            title="Get embed code & widget preview"
+            onClick={() => updateStatus("DRAFT")}
+            disabled={statusSaving}
+            className="rounded-lg border border-white/10 bg-slate-800/60 px-2 sm:px-2.5 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/10 hover:text-white disabled:opacity-50 cursor-pointer"
+            title="Revert back to Draft mode"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
-            <span className="hidden sm:inline">Embed</span> Widget
+            {statusSaving ? "..." : "Draft"}
           </button>
-          {form.status === "PUBLISHED" && (
-            <Link
-              href={`/forms/${form.publicId}`}
-              target="_blank"
-              rel="noreferrer"
-              className="whitespace-nowrap text-xs font-medium text-indigo-300 transition hover:text-indigo-200 hidden sm:inline"
-            >
-              Open form ↗
-            </Link>
-          )}
-        </div>
+        )}
+
+        {/* Embed Widget Button */}
+        <button
+          type="button"
+          onClick={() => setEmbedModalOpen(true)}
+          className="inline-flex items-center gap-1 sm:gap-1.5 rounded-lg border border-indigo-500/35 bg-indigo-500/10 px-2 sm:px-2.5 py-1.5 text-xs font-semibold text-indigo-300 transition hover:bg-indigo-500/20 hover:text-white cursor-pointer"
+          title="Get embed code & widget preview"
+        >
+          <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          <span className="hidden xs:inline sm:inline">Embed</span>
+        </button>
+
+        {/* Open Live Form link (desktop only) */}
+        {form.status === "PUBLISHED" && (
+          <Link
+            href={`/forms/${form.publicId}`}
+            target="_blank"
+            rel="noreferrer"
+            className="whitespace-nowrap text-xs font-medium text-indigo-300 transition hover:text-indigo-200 hidden lg:inline"
+          >
+            Open ↗
+          </Link>
+        )}
       </div>
 
       {statusError && (

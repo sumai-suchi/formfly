@@ -274,21 +274,21 @@ function ChatPreviewConversation({ form, questions }: ChatPreviewProps) {
   );
 
   return (
-    <section className="flex h-full min-h-[520px] flex-col p-3 sm:p-5" aria-label="Chatbot preview">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+    <section className="flex h-full min-h-0 flex-1 flex-col p-2.5 sm:p-4 md:p-5" aria-label="Chatbot preview">
+      <div className="mb-2.5 sm:mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">Chatbot preview</p>
-          <p className="mt-0.5 text-xs text-slate-500">Test respondent interaction and widget responsiveness</p>
+          <p className="text-xs sm:text-sm font-semibold text-white">Chatbot preview</p>
+          <p className="text-[11px] sm:text-xs text-slate-500">Test live responses and layout styling</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           {/* Mode Switcher */}
           <div className="flex rounded-lg border border-white/10 bg-slate-900/90 p-0.5 text-xs">
             <button
               type="button"
               onClick={() => setViewMode("inline")}
-              className={`rounded-md px-2.5 py-1 font-medium transition ${
+              className={`rounded-md px-2 sm:px-2.5 py-1 text-xs font-medium transition cursor-pointer ${
                 viewMode === "inline"
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-indigo-600 text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -297,9 +297,9 @@ function ChatPreviewConversation({ form, questions }: ChatPreviewProps) {
             <button
               type="button"
               onClick={() => setViewMode("widget")}
-              className={`rounded-md px-2.5 py-1 font-medium transition ${
+              className={`rounded-md px-2 sm:px-2.5 py-1 text-xs font-medium transition cursor-pointer ${
                 viewMode === "widget"
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-indigo-600 text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -310,7 +310,7 @@ function ChatPreviewConversation({ form, questions }: ChatPreviewProps) {
           <button
             type="button"
             onClick={resetPreview}
-            className="rounded-lg border border-white/8 bg-slate-900/70 px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition"
+            className="rounded-lg border border-white/8 bg-slate-900/70 px-2 sm:px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer"
             title="Reset conversation"
           >
             Reset

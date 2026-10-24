@@ -176,9 +176,9 @@ export default function QuestionsPanel({
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      {/* Top Navigation Tabs */}
-      <div className="flex items-center rounded-xl bg-slate-900/80 p-1 border border-white/8">
+    <div className="flex flex-col gap-3.5 sm:gap-4 p-3 sm:p-4">
+      {/* Top Navigation Tabs - Desktop Only (Mobile uses BuilderLayout switcher) */}
+      <div className="hidden lg:flex items-center rounded-xl bg-slate-900/80 p-1 border border-white/8">
         <button
           type="button"
           onClick={() => setActiveTab("questions")}
@@ -414,13 +414,22 @@ export default function QuestionsPanel({
               />
               <span className="text-xs text-slate-300">Theme: <strong className="text-white font-mono">{activeColor.toUpperCase()}</strong></span>
             </div>
-            <button
-              type="button"
-              onClick={() => setActiveTab("theme")}
-              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
-            >
-              Change Color →
-            </button>
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setActiveTab("settings")}
+                className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Settings
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("theme")}
+                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+              >
+                Colors →
+              </button>
+            </div>
           </div>
 
           {/* Questions list header */}
