@@ -11,3 +11,128 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+
+
+
+// -----------------------------------------------------------------------------
+// 1. User Model
+
+// -----------------------------------------------------------------------------
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  forms     Form[]
+
+  @@map("users")
+}
+
+// -----------------------------------------------------------------------------
+// 2. Form Model
+
+// -----------------------------------------------------------------------------
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Form {
+  id                String      @id @default(cuid())
+  ownerId           String
+  owner             User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  title             String
+  description       String?
+  status            FormStatus  @default(DRAFT)
+  
+
+  publicId          String      @unique
+  
+
+  welcomeMessage    String      @default("Hi! Welcome. Let's get started.")
+  completionMessage String      @default("Thank you for your responses! Your feedback has been recorded.")
+  primaryColor      String      @default("#2563eb") // Default Blue (#2563eb)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  questions         Question[]
+  submissions       Submission[]
+
+  @@map("forms")
+}
+
+// -----------------------------------------------------------------------------
+// 3. Question Model
+
+// -----------------------------------------------------------------------------
+enum QuestionType {
+  TEXT
+  EMAIL
+  MULTIPLE_CHOICE
+  YES_NO
+}
+
+model Question {
+  id          String       @id @default(cuid())
+  formId      String
+  form        Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  
+  label       String      
+  description String?     
+  type        QuestionType @default(TEXT)
+  
+
+  options     String?      
+  
+  required    Boolean      @default(true)
+  order       Int          @default(0)
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  answers     Answer[]
+
+  @@map("questions")
+}
+
+// -----------------------------------------------------------------------------
+// 4. Submission Model
+
+// -----------------------------------------------------------------------------
+model Submission {
+  id           String    @id @default(cuid())
+  formId       String
+  form         Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
+  
+  submittedAt  DateTime  @default(now())
+  respondentIp String? 
+
+
+  answers      Answer[]
+
+  @@map("submissions")
+}
+
+// -----------------------------------------------------------------------------
+// 5. Answer Model
+
+// -----------------------------------------------------------------------------
+model Answer {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  
+  questionId   String
+  question     Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  value        String    
+  createdAt    DateTime   @default(now())
+
+  @@map("answers")
+}
