@@ -10,9 +10,31 @@ interface BuilderTopbarProps {
   saving: "idle" | "saving" | "saved";
 }
 
-export default function BuilderTopbar({ form, saving }: BuilderTopbarProps) {
+export default function BuilderTopbar({ form, onFormChange, saving }: BuilderTopbarProps) {
   const [editingTitle, setEditingTitle] = useState(false);
+  const [statusSaving, setStatusSaving] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const updateStatus = async (status: FormData["status"]) => {
+    setStatusSaving(true);
+    setStatusError(null);
+    try {
+      const response = await fetch(`/api/forms/${form.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not update form status.");
+
+      onFormChange({ ...form, status: data.form.status });
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : "Could not update form status.");
+    } finally {
+      setStatusSaving(false);
+    }
+  };
 
   const handleTitleClick = () => {
     setEditingTitle(true);
@@ -97,19 +119,40 @@ export default function BuilderTopbar({ form, saving }: BuilderTopbarProps) {
           {form.status}
         </span>
 
-        {/* Publish button (disabled) */}
-        <div className="relative group">
+        <div className="flex items-center gap-2">
           <button
-            disabled
-            className="rounded-lg bg-indigo-600/40 px-3 py-1.5 text-xs font-semibold text-indigo-300 opacity-60 cursor-not-allowed"
+            type="button"
+            onClick={() => updateStatus("DRAFT")}
+            disabled={statusSaving || form.status === "DRAFT"}
+            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-45"
           >
-            Publish
+            {statusSaving && form.status !== "DRAFT" ? "Saving…" : "Save as draft"}
           </button>
-          <div className="absolute right-0 top-full mt-1 hidden w-40 rounded-lg border border-white/10 bg-slate-800 p-2 text-xs text-slate-400 group-hover:block">
-            Publishing coming soon
-          </div>
+          <button
+            type="button"
+            onClick={() => updateStatus("PUBLISHED")}
+            disabled={statusSaving || form.status === "PUBLISHED"}
+            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {statusSaving && form.status !== "PUBLISHED" ? "Publishing…" : "Publish"}
+          </button>
+          {form.status === "PUBLISHED" && (
+            <Link
+              href={`/forms/${form.publicId}`}
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap text-xs font-medium text-indigo-300 transition hover:text-indigo-200"
+            >
+              Open form ↗
+            </Link>
+          )}
         </div>
       </div>
+      {statusError && (
+        <p role="alert" className="absolute right-4 top-full mt-2 rounded-lg border border-red-500/20 bg-[#160d12] px-3 py-2 text-xs text-red-300 shadow-lg">
+          {statusError}
+        </p>
+      )}
     </div>
   );
 }

@@ -12,6 +12,11 @@ export default function CreateFormButton() {
   const [error, setError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
+  const closeModal = useCallback(() => {
+    if (loading) return;
+    setOpen(false);
+  }, [loading]);
+
   // Close on Escape
   useEffect(() => {
     if (!open) return;
@@ -20,7 +25,7 @@ export default function CreateFormButton() {
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [open]);
+  }, [open, closeModal]);
 
   // Focus title when modal opens
   useEffect(() => {
@@ -35,11 +40,6 @@ export default function CreateFormButton() {
     setError(null);
     setOpen(true);
   };
-
-  const closeModal = useCallback(() => {
-    if (loading) return;
-    setOpen(false);
-  }, [loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +60,7 @@ export default function CreateFormButton() {
         setError(data.error ?? "Something went wrong. Please try again.");
         return;
       }
-      router.push(`/dashboard/forms/${data.form.id}/builder`);
+      router.push(`/dashboard/form/${data.form.id}/builder`);
     } catch {
       setError("Network error. Please try again.");
     } finally {

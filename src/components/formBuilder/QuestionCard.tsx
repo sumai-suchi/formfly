@@ -8,6 +8,10 @@ interface QuestionCardProps {
   index: number;
   onDelete: () => void;
   onEdit: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
 }
 
 const TYPE_BADGE: Record<string, { label: string; className: string }> = {
@@ -17,18 +21,21 @@ const TYPE_BADGE: Record<string, { label: string; className: string }> = {
   YES_NO: { label: "Yes / No", className: "bg-emerald-500/15 text-emerald-400" },
 };
 
-export default function QuestionCard({ question, index, onDelete, onEdit }: QuestionCardProps) {
+export default function QuestionCard({ question, index, onDelete, onEdit, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: QuestionCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const badge = TYPE_BADGE[question.type] ?? { label: question.type, className: "bg-slate-500/15 text-slate-400" };
 
   return (
     <div className="group flex items-start gap-3 rounded-xl border border-white/8 bg-slate-900/60 px-3 py-3 transition hover:border-white/15">
-      {/* Drag handle (visual only) */}
-      <div className="mt-0.5 flex-shrink-0 cursor-grab text-slate-600 hover:text-slate-400">
-        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9 4.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM9 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM9 16.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
-        </svg>
+      {/* Reorder controls */}
+      <div className="mt-0.5 flex flex-shrink-0 flex-col">
+        <button type="button" onClick={onMoveUp} disabled={!canMoveUp} title="Move question up" aria-label="Move question up" className="rounded p-0.5 text-slate-500 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m5 15 7-7 7 7" /></svg>
+        </button>
+        <button type="button" onClick={onMoveDown} disabled={!canMoveDown} title="Move question down" aria-label="Move question down" className="rounded p-0.5 text-slate-500 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
+        </button>
       </div>
 
       {/* Question number */}

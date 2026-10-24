@@ -35,6 +35,8 @@ export default function QuestionsPanel({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editQuestion, setEditQuestion] = useState<QuestionData | null>(null);
+  const [reordering, setReordering] = useState(false);
+  const [questionActionError, setQuestionActionError] = useState<string | null>(null);
 
   // Local settings state (debounced save)
   const [localTitle, setLocalTitle] = useState(form.title);
@@ -86,8 +88,54 @@ export default function QuestionsPanel({
   }, [localTitle, localDesc, localWelcome, localCompletion, localColor]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteQuestion = async (questionId: string) => {
-    await fetch(`/api/forms/${form.id}/questions/${questionId}`, { method: "DELETE" });
-    onQuestionsChange(questions.filter((q) => q.id !== questionId));
+    setQuestionActionError(null);
+    try {
+      const response = await fetch(`/api/forms/${form.id}/questions/${questionId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not delete question.");
+      onQuestionsChange(
+        questions
+          .filter((question) => question.id !== questionId)
+          .sort((a, b) => a.order - b.order)
+          .map((question, order) => ({ ...question, order }))
+      );
+    } catch (error) {
+      setQuestionActionError(error instanceof Error ? error.message : "Could not delete question.");
+    }
+  };
+
+  const moveQuestion = async (questionId: string, direction: -1 | 1) => {
+    if (reordering) return;
+    setQuestionActionError(null);
+    const previous = questions.slice().sort((a, b) => a.order - b.order);
+    const fromIndex = previous.findIndex((question) => question.id === questionId);
+    const toIndex = fromIndex + direction;
+    if (fromIndex < 0 || toIndex < 0 || toIndex >= previous.length) return;
+
+    const reordered = previous.slice();
+    [reordered[fromIndex], reordered[toIndex]] = [reordered[toIndex], reordered[fromIndex]];
+    const updated = reordered.map((question, order) => ({ ...question, order }));
+    onQuestionsChange(updated);
+    setReordering(true);
+    setSaving("saving");
+
+    try {
+      const response = await fetch(`/api/forms/${form.id}/questions`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionIds: updated.map((question) => question.id) }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not save question order.");
+      setSaving("saved");
+      setTimeout(() => setSaving("idle"), 2000);
+    } catch (error) {
+      onQuestionsChange(previous);
+      setQuestionActionError(error instanceof Error ? error.message : "Could not save question order.");
+      setSaving("idle");
+    } finally {
+      setReordering(false);
+    }
   };
 
   const handleQuestionAdded = (q: QuestionData) => {
@@ -196,10 +244,16 @@ export default function QuestionsPanel({
           </h3>
         </div>
 
+        {questionActionError && (
+          <p role="alert" className="rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2 text-xs text-red-300">
+            {questionActionError}
+          </p>
+        )}
+
         {questions.length === 0 ? (
           <div className="rounded-xl border border-dashed border-white/10 py-10 text-center">
             <p className="text-sm text-slate-500">No questions yet.</p>
-            <p className="mt-1 text-xs text-slate-600">Click "Add Question" to get started.</p>
+            <p className="mt-1 text-xs text-slate-600">Click <span className="font-medium text-slate-400">Add Question</span> to get started.</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -211,8 +265,12 @@ export default function QuestionsPanel({
                   key={q.id}
                   question={q}
                   index={idx}
-                  onDelete={() => handleDeleteQuestion(q.id)}
+                  onDelete={() => void handleDeleteQuestion(q.id)}
                   onEdit={() => setEditQuestion(q)}
+                  onMoveUp={() => void moveQuestion(q.id, -1)}
+                  onMoveDown={() => void moveQuestion(q.id, 1)}
+                  canMoveUp={!reordering && idx > 0}
+                  canMoveDown={!reordering && idx < questions.length - 1}
                 />
               ))}
           </div>
