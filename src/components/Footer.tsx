@@ -101,19 +101,19 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <a href="#features" className="hover:text-white transition-colors">
+                <Link href="/features" className="hover:text-white transition-colors">
                   Features
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-white transition-colors">
+                <Link href="/how-it-works" className="hover:text-white transition-colors">
                   How It Works
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#demo" className="hover:text-white transition-colors">
+                <Link href="/demo" className="hover:text-white transition-colors">
                   Interactive Demo
-                </a>
+                </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="hover:text-white transition-colors">
@@ -138,14 +138,14 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <a href="#features" className="hover:text-white transition-colors">
+                <Link href="/features" className="hover:text-white transition-colors">
                   Single Script Tag
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#demo" className="hover:text-white transition-colors">
+                <Link href="/demo" className="hover:text-white transition-colors">
                   Code Generator
-                </a>
+                </Link>
               </li>
               <li>
                 <span className="hover:text-white transition-colors cursor-pointer">

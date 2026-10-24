@@ -1,11 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_NAME } from "@/lib/auth";
 
-export async function POST() {
-  const response = NextResponse.redirect(
-    new URL("/login", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
-    { status: 302 }
-  );
+export async function POST(req: NextRequest) {
+  const fromParam = req.nextUrl.searchParams.get("from");
+  const targetPath =
+    fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")
+      ? fromParam
+      : "/login";
+
+  const redirectUrl = new URL(targetPath, req.url);
+  const response = NextResponse.redirect(redirectUrl, { status: 302 });
 
   response.cookies.set({
     name: COOKIE_NAME,

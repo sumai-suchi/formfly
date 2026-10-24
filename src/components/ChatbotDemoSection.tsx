@@ -209,7 +209,7 @@ export default function ChatbotDemoSection() {
   };
 
   const generatedScriptCode = `<script 
-  src="https://formfly.app/widget.js" 
+  src="https://formfly.app/formfly-widget.js" 
   data-form-id="ff_${activeTemplateKey}"
   data-theme="${themeColor.name.toLowerCase()}"
   data-mode="${displayMode}"

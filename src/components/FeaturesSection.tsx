@@ -55,7 +55,7 @@ export default function FeaturesSection() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
-      '<script src="https://formfly.app/widget.js" data-form-id="form_8291"></script>'
+      '<script src="https://formfly.app/formfly-widget.js" data-form-id="form_8291"></script>'
     );
     setCopiedSnippet(true);
     setTimeout(() => setCopiedSnippet(false), 2000);
@@ -261,7 +261,7 @@ export default function FeaturesSection() {
                 </button>
               </div>
               <code className="block text-[11px] font-mono text-indigo-300 break-all select-all">
-                {`<script src="https://formfly.app/widget.js" data-form-id="form_8291"></script>`}
+                {`<script src="https://formfly.app/formfly-widget.js" data-form-id="form_8291"></script>`}
               </code>
             </div>
           </div>

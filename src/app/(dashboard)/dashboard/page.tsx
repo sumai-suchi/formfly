@@ -60,12 +60,16 @@ export default async function DashboardPage() {
       {/* ── Forms list / empty state ─────────────────────────────────────── */}
       {forms.length === 0 ? <EmptyFormsState /> : <FormsList forms={forms.map((form) => ({
         id: form.id,
+        publicId: form.publicId,
         title: form.title,
         description: form.description,
         status: form.status,
         updatedAt: form.updatedAt.toISOString(),
         submissionCount: form._count.submissions,
         questionCount: form._count.questions,
+        primaryColor: form.primaryColor,
+        welcomeMessage: form.welcomeMessage,
+        completionMessage: form.completionMessage,
       })).slice(0, 5)} />}
       {forms.length > 0 && (
         <Link href="/dashboard/forms" className="block text-center text-xs font-medium text-indigo-400 transition hover:text-indigo-300 sm:hidden">

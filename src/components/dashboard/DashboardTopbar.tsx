@@ -1,3 +1,7 @@
+
+
+import Link from "next/link";
+
 interface DashboardTopbarProps {
   userName?: string | null;
   userEmail: string;
@@ -8,14 +12,14 @@ export default function DashboardTopbar({ userName, userEmail }: DashboardTopbar
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#090a0f]/85 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {/* Brand — left side (with space for mobile sidebar toggle) */}
-        <div className="flex items-center gap-2.5 pl-10 lg:pl-0">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
+        <Link href="/" className="group flex items-center gap-2.5 pl-10 lg:pl-0 transition hover:opacity-90">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition-transform duration-200 group-hover:scale-105">
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
-          <span className="text-base font-bold tracking-tight text-white">FormFly</span>
-        </div>
+          <span className="text-base font-bold tracking-tight text-white group-hover:text-indigo-200 transition-colors">FormFly</span>
+        </Link>
 
         {/* Right side */}
         <div className="relative flex items-center gap-3">

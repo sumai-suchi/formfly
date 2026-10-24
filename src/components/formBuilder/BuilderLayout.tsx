@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormData, QuestionData } from "@/types/form";
 import BuilderTopbar from "./BuilderTopbar";
 import QuestionsPanel from "./QuestionsPanel";
@@ -16,10 +16,35 @@ export default function BuilderLayout({ initialForm, initialQuestions }: Builder
   const [questions, setQuestions] = useState<QuestionData[]>(initialQuestions);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [activeTab, setActiveTab] = useState<"questions" | "preview">("questions");
+  const [leftTab, setLeftTab] = useState<"questions" | "theme" | "settings">("questions");
+
+  useEffect(() => {
+    // Ensure any floating widgets from previous test pages are removed from document.body
+    if (typeof window !== "undefined") {
+      const formfly = (window as unknown as { FormFly?: { destroy?: () => void } }).FormFly;
+      if (formfly?.destroy) {
+        formfly.destroy();
+      }
+      document.querySelectorAll("[data-formfly-widget], [data-formfly-widget-panel], .ff-widget-container, .ff-widget-panel").forEach((el) => {
+        el.remove();
+      });
+    }
+  }, []);
+
+  const handleLeftTabChange = (tab: "questions" | "theme" | "settings") => {
+    setLeftTab(tab);
+    setActiveTab("questions");
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090a0f]">
-      <BuilderTopbar form={form} onFormChange={setForm} saving={saving} />
+      <BuilderTopbar
+        form={form}
+        onFormChange={setForm}
+        saving={saving}
+        activeLeftTab={leftTab}
+        onLeftTabChange={handleLeftTabChange}
+      />
 
       {/* Mobile tab switcher */}
       <div className="flex border-b border-white/8 lg:hidden">
@@ -33,14 +58,14 @@ export default function BuilderLayout({ initialForm, initialQuestions }: Builder
                 : "text-slate-500 hover:text-slate-300"
             }`}
           >
-            {tab}
+            {tab === "questions" ? (leftTab === "theme" ? "Theme & Colors" : "Form Editor") : "Chat Preview"}
           </button>
         ))}
       </div>
 
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Questions panel — 40% on desktop, full on mobile */}
+        {/* Left panel — 40% on desktop, full on mobile */}
         <div
           className={`w-full flex-shrink-0 overflow-y-auto border-r border-white/8 lg:block lg:w-2/5 ${
             activeTab !== "questions" ? "hidden lg:block" : ""
@@ -52,6 +77,8 @@ export default function BuilderLayout({ initialForm, initialQuestions }: Builder
             onFormChange={setForm}
             onQuestionsChange={setQuestions}
             setSaving={setSaving}
+            activeTab={leftTab}
+            onTabChange={setLeftTab}
           />
         </div>
 

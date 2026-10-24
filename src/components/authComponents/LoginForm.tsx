@@ -1,12 +1,13 @@
 "use client"
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function LoginForm (){
 
      const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,7 +46,9 @@ export default function LoginForm (){
         throw new Error(data.error || data.message || "Invalid credentials. Please try again.");
       }
 
-      router.push("/dashboard");
+      const fromParam = searchParams.get("from");
+      const targetUrl = fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//") ? fromParam : "/dashboard";
+      router.push(targetUrl);
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) {

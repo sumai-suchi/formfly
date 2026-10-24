@@ -10,7 +10,7 @@ export default async function EmbedPage() {
   const forms = await prisma.form.findMany({
     where: { ownerId: user.id, status: "PUBLISHED" },
     orderBy: { updatedAt: "desc" },
-    select: { id: true, publicId: true, title: true },
+    select: { id: true, publicId: true, title: true, primaryColor: true },
   });
 
   return (

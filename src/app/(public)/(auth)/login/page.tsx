@@ -1,11 +1,8 @@
+import { Suspense } from "react";
 import LoginForm from "@/components/authComponents/LoginForm";
 import Link from "next/link";
 
-
-
-
 export default function LoginPage() {
- 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-[#090a0f] text-slate-100 overflow-hidden">
       {/* Background Ambience */}
@@ -36,10 +33,15 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <LoginForm></LoginForm>
-
-     
-       
+        <Suspense
+          fallback={
+            <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800/80 animate-pulse text-center text-sm text-slate-400">
+              Loading login portal...
+            </div>
+          }
+        >
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

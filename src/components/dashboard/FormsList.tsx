@@ -3,15 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import EmbedWidgetModal from "@/components/formBuilder/EmbedWidgetModal";
 
 export interface DashboardForm {
   id: string;
+  publicId?: string;
   title: string;
   description: string | null;
   status: "DRAFT" | "PUBLISHED";
   updatedAt: string;
   submissionCount: number;
   questionCount: number;
+  primaryColor?: string;
+  welcomeMessage?: string;
+  completionMessage?: string;
 }
 
 export default function FormsList({
@@ -25,6 +30,7 @@ export default function FormsList({
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [selectedEmbedForm, setSelectedEmbedForm] = useState<DashboardForm | null>(null);
 
   const deleteForm = async (formId: string) => {
     setDeletingId(formId);
@@ -65,6 +71,13 @@ export default function FormsList({
             <div className="flex shrink-0 flex-wrap items-center gap-4 text-xs text-slate-400">
               <span>{form.questionCount} {form.questionCount === 1 ? "question" : "questions"}</span>
               <span>{form.submissionCount} {form.submissionCount === 1 ? "submission" : "submissions"}</span>
+              <button
+                type="button"
+                onClick={() => setSelectedEmbedForm(form)}
+                className="font-medium text-slate-300 transition hover:text-white"
+              >
+                Embed
+              </button>
               <Link href={`/dashboard/form/${form.id}/builder`} className="font-medium text-indigo-400 transition hover:text-indigo-300">
                 {showActions ? "Edit form" : "Open builder"} <span aria-hidden="true">→</span>
               </Link>
@@ -99,6 +112,25 @@ export default function FormsList({
           )}
         </div>
       ))}
+
+      {selectedEmbedForm && (
+        <EmbedWidgetModal
+          form={{
+            id: selectedEmbedForm.id,
+            publicId: selectedEmbedForm.publicId || selectedEmbedForm.id,
+            title: selectedEmbedForm.title,
+            description: selectedEmbedForm.description,
+            status: selectedEmbedForm.status,
+            welcomeMessage: selectedEmbedForm.welcomeMessage || "Hi! Welcome. Let's get started.",
+            completionMessage: selectedEmbedForm.completionMessage || "Thank you for your responses!",
+            primaryColor: selectedEmbedForm.primaryColor || "#4f46e5",
+            createdAt: selectedEmbedForm.updatedAt,
+            updatedAt: selectedEmbedForm.updatedAt,
+          }}
+          isOpen={Boolean(selectedEmbedForm)}
+          onClose={() => setSelectedEmbedForm(null)}
+        />
+      )}
     </div>
   );
 }

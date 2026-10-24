@@ -268,7 +268,7 @@ export default function HeroSection() {
                 {"// Copy & paste into any external HTML page:"}
               </div>
               <code className="text-indigo-300 block select-all">
-                {`<script src="https://formfly.app/widget.js" data-form-id="form_8291"></script>`}
+                {`<script src="https://formfly.app/formfly-widget.js" data-form-id="form_8291"></script>`}
               </code>
             </div>
           )}

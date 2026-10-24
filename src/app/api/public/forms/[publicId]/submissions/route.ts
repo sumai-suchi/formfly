@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/auth";
 
 interface Params {
   params: Promise<{ publicId: string }>;
@@ -22,13 +23,19 @@ function parseOptions(raw: string | null): string[] {
 
 export async function POST(request: Request, { params }: Params) {
   const { publicId } = await params;
+  const user = await getSessionUser();
   const form = await prisma.form.findFirst({
-    where: { publicId, status: "PUBLISHED" },
+    where: { publicId },
     include: { questions: { orderBy: { order: "asc" } } },
   });
 
   if (!form) {
     return NextResponse.json({ error: "This form is not available" }, { status: 404 });
+  }
+
+  const isOwner = Boolean(user && user.id === form.ownerId);
+  if (form.status !== "PUBLISHED" && !isOwner) {
+    return NextResponse.json({ error: "This form is currently a draft and not accepting responses." }, { status: 403 });
   }
 
   let body: unknown;
