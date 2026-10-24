@@ -20,11 +20,8 @@ export default function DashboardTopbar({ userName, userEmail }: DashboardTopbar
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-3">
-          {/* Create form button — hidden on very small screens */}
-          <div className="hidden sm:block">
-            <CreateFormButton />
-          </div>
+        <div className="relative flex items-center gap-3">
+        
 
           {/* User chip */}
           <div className="hidden sm:flex items-center gap-2 rounded-lg border border-white/8 bg-slate-800/50 px-3 py-1.5">
