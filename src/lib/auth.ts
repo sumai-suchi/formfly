@@ -54,10 +54,7 @@ export async function verifyToken(token: string): Promise<SessionPayload | null>
   }
 }
 
-/**
- * বর্তমানে লগইন থাকা ইউজারের সেশন বের করার সার্ভার-সাইড ফাংশন
- * (Next.js Route Handlers বা Server Components থেকে সরাসরি কল করা যাবে)
- */
+
 export async function getSessionUser() {
   try {
     const cookieStore = await cookies();
